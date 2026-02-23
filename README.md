@@ -22,4 +22,4 @@ API REST sécurisée développée avec Node.js, Express et PostgreSQL.
 
 ## Objectif
 
-Projet réalisé dans je but d'agrmenter mon portfolio
+Projet réalisé dans je but d'agrementer mon portfolio
