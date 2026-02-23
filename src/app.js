@@ -9,9 +9,10 @@ app.use(express.json());
 
 // Import des routes
 const userRoutes = require("./routes/user.routes");
-
-// Utilisation des routes
 app.use("/users", userRoutes);
+
+const characterRoutes = require("./routes/character.routes");
+app.use("/characters", characterRoutes);
 
 // Route racine
 app.get("/", (req, res) => {

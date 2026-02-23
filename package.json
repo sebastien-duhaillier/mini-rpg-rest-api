@@ -8,7 +8,8 @@
     "dev": "nodemon src/app.js",
     "start": "node src/app.js",
     "db:dev": "node run_sql.js",
-    "test:users": "node src/test/test_users.js"
+    "test:users": "node src/test/test_users.js",
+    "test:characters": "node src/test/test_characters.js"
   },
   "keywords": [],
   "author": "",
