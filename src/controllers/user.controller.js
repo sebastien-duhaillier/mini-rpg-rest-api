@@ -13,6 +13,21 @@ const UserController = {
     }
   },
 
+getCharacters: async (req, res) => {
+  try {
+    const characters = await User.getCharacters(req.params.id);
+    res.json(characters);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+},
+
+
+
+
+
+
   // Récupérer un utilisateur par ID
   getUserById: async (req, res) => {
     try {

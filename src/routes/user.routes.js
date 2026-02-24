@@ -6,6 +6,9 @@ const UserController = require("../controllers/user.controller");
 // 📌 Récupérer tous les utilisateurs
 router.get("/", UserController.getAllUsers);
 
+// 📌 Récupérer les personnages d’un utilisateur
+router.get("/:id/characters", UserController.getCharacters);
+
 // 📌 Récupérer un utilisateur par ID
 router.get("/:id", UserController.getUserById);
 

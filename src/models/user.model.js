@@ -18,6 +18,19 @@ const User = {
     );
     return res.rows[0];
   },
+ // ✅ NOUVEAU : récupérer les personnages d’un utilisateur
+  getCharacters: async (userId) => {
+    const res = await pool.query(
+      `SELECT id, user_id, name, level, experience, health, mana, class, created_at
+       FROM characters
+       WHERE user_id = $1
+       ORDER BY id`,
+      [userId]
+    );
+    return res.rows;
+  },
+
+
 
   // Créer un nouvel utilisateur
   create: async (username, password, email) => {

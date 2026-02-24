@@ -9,7 +9,11 @@
     "start": "node src/app.js",
     "db:dev": "node run_sql.js",
     "test:users": "node src/test/test_users.js",
-    "test:characters": "node src/test/test_characters.js"
+    "test:characters": "node src/test/test_characters.js",
+    "test:characters:full": "node src/test/test_character_full.js",
+    "test:spells": "node src/test/test_spells.js",
+    "test:items": "node src/test/test_items.js",
+    "db:hash-passwords": "node scripts/hash_existing_passwords.js"
   },
   "keywords": [],
   "author": "",
