@@ -1,17 +1,20 @@
 const express = require("express");
 const router = express.Router();
 const ItemController = require("../controllers/item.controller");
+const auth = require("../middleware/auth.middleware");
 
-router.get("/", ItemController.getAll);
+// Tout items = protégé
+router.get("/", auth, ItemController.getAll);
 
-router.get("/:id", ItemController.getById);
+// ⚠️ Route spécifique AVANT "/:id"
+router.get("/character/:characterId", auth, ItemController.getByCharacter);
 
-router.get("/character/:characterId", ItemController.getByCharacter);
+router.get("/:id", auth, ItemController.getById);
 
-router.post("/", ItemController.create);
+router.post("/", auth, ItemController.create);
 
-router.put("/:id", ItemController.update);
+router.put("/:id", auth, ItemController.update);
 
-router.delete("/:id", ItemController.delete);
+router.delete("/:id", auth, ItemController.delete);
 
 module.exports = router;
