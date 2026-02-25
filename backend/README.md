@@ -1,0 +1,25 @@
+# Mini RPG API
+
+API REST sécurisée développée avec Node.js, Express et PostgreSQL.
+
+## Fonctionnalités
+
+- Authentification JWT
+- Hash des mots de passe (bcrypt)
+- Gestion des personnages
+- Gestion d'inventaire
+- Relations SQL (clés étrangères)
+- Middleware de protection
+- Validation des données
+
+## Stack technique
+
+- Node.js
+- Express
+- PostgreSQL
+- JWT
+- bcrypt
+
+## Objectif
+
+Projet réalisé dans je but d'agrementer mon portfolio
