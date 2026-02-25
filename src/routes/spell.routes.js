@@ -1,17 +1,20 @@
 const express = require("express");
 const router = express.Router();
 const SpellController = require("../controllers/spell.controller");
+const auth = require("../middleware/auth.middleware");
 
-router.get("/", SpellController.getAll);
+// tout protégé
+router.get("/", auth, SpellController.getAll);
 
-router.get("/:id", SpellController.getById);
+// ⚠️ spécifique avant "/:id"
+router.get("/character/:characterId", auth, SpellController.getByCharacter);
 
-router.get("/character/:characterId", SpellController.getByCharacter);
+router.get("/:id", auth, SpellController.getById);
 
-router.post("/", SpellController.create);
+router.post("/", auth, SpellController.create);
 
-router.put("/:id", SpellController.update);
+router.put("/:id", auth, SpellController.update);
 
-router.delete("/:id", SpellController.delete);
+router.delete("/:id", auth, SpellController.delete);
 
 module.exports = router;
