@@ -1,21 +1,22 @@
 # env
 **/.env
-**/.env.* 
+**/.env.*
 !**/.env.example
 
-# deps
+# dependencies
 **/node_modules
 
-# builds
+# Vite build
 frontend/dist
-backend/dist
 
 # logs
 **/*.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
+pnpm-debug.log*
 
-# OS
+# OS / editor
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
