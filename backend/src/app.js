@@ -1,8 +1,15 @@
 // src/app.js
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 
 const app = express();
+
+// Middleware CORS pour autoriser le frontend
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 
 // Middleware pour parser le JSON
 app.use(express.json());

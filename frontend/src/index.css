@@ -1,3 +1,10 @@
+/*
+  Nettoyage :
+  - Les styles de base (reset, polices système, boutons, liens, etc.) restent dans index.css.
+  - Tous les styles RPG/médiévaux (rpg-bg-medieval, rpg-card-medieval, MedievalSharp, etc.) sont centralisés dans style.css.
+  - Aucun doublon ni conflit : index.css = base neutre, style.css = ambiance RPG.
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

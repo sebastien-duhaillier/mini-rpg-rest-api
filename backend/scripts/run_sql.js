@@ -3,7 +3,7 @@ require("dotenv").config(); // <-- charge le .env
 const { exec } = require("child_process");
 const path = require("path");
 
-const sqlFolder = path.join(__dirname, "..", "create_db");
+const sqlFolder = path.join(__dirname, "create_db");
 const files = ["01_create_tables.sql", "02_insert_data.sql"];
 
 const host = process.env.DB_HOST;
