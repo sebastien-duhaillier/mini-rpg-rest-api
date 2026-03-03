@@ -53,7 +53,7 @@ const AuthController = {
         return res.status(401).json({ error: "Mot de passe incorrect" });
 
       const token = jwt.sign(
-        { id: user.id, username: user.username },
+        { id: user.id, username: user.username, role: user.role },
         process.env.JWT_SECRET,
         { expiresIn: "24h" }
       );
@@ -63,7 +63,8 @@ const AuthController = {
         user: {
           id: user.id,
           username: user.username,
-          email: user.email
+          email: user.email,
+          role: user.role
         }
       });
 

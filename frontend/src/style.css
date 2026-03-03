@@ -205,7 +205,7 @@ body, html {
   border: 2px solid #6b4f1d;
   border-radius: 8px;
   padding: 0.75em 1.5em;
-  font-size: 1.1em;
+  font-size: 0.95em;
   cursor: pointer;
   box-shadow: 0 2px 8px #0003;
   transition: background 0.2s, color 0.2s, border 0.2s;
@@ -268,4 +268,21 @@ main {
   justify-content: center;
   min-height: calc(100vh - 104px);
   width: 100vw;
+}
+
+nav .rpg-btn-nav {
+  font-size: 0.95em;
+  padding: 0.4em 0.9em;
+  min-width: 0;
+  margin: 0 0.3em;
+}
+
+.rpg-btn-medieval {
+  font-size: 0.95em;
+  padding: 0.4em 0.9em;
+  min-width: 0;
+}
+
+nav .rpg-btn-medieval {
+  margin: 0 0.3em;
 }

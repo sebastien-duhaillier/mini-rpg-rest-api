@@ -9,10 +9,11 @@
 TRUNCATE TABLE spells, items, characters, users RESTART IDENTITY CASCADE;
 
 -- Users
-INSERT INTO users (username, password, email)
+INSERT INTO users (username, password, email, role)
 VALUES
-('player1', 'password123', 'player1@mail.com'),
-('player2', 'password456', 'player2@mail.com');
+('superadmin', '$2b$10$VjHsbaK6z35ZOgLnptIzjOfNlztmXlC.wozr3tabdFB8JssQc3g.a', 'admin@mail.com', 'admin'),
+('player1', 'password123', 'player1@mail.com', 'user'),
+('player2', 'password456', 'player2@mail.com', 'user');
 
 -- Characters
 INSERT INTO characters (user_id, name, level, experience, health, mana, class)

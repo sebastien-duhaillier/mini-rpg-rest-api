@@ -13,20 +13,15 @@ const UserController = {
     }
   },
 
-getCharacters: async (req, res) => {
-  try {
-    const characters = await User.getCharacters(req.params.id);
-    res.json(characters);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Erreur serveur" });
-  }
-},
-
-
-
-
-
+  getCharacters: async (req, res) => {
+    try {
+      const characters = await User.getCharacters(req.params.id);
+      res.json(characters);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  },
 
   // Récupérer un utilisateur par ID
   getUserById: async (req, res) => {
@@ -98,6 +93,22 @@ getCharacters: async (req, res) => {
       res.json({ message: "Utilisateur supprimé avec succès", id: deletedUser.id });
     } catch (err) {
       console.error("Erreur suppression utilisateur :", err);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  },
+
+  // Récupérer l'utilisateur connecté via le token
+  getMe: async (req, res) => {
+    try {
+      console.log('req.user dans getMe:', req.user);
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ error: "Non authentifié" });
+      const user = await User.getById(userId);
+      console.log('User trouvé dans getMe:', user);
+      if (!user) return res.status(404).json({ error: "Utilisateur non trouvé" });
+      res.json(user);
+    } catch (err) {
+      console.error("Erreur récupération profil utilisateur :", err);
       res.status(500).json({ error: "Erreur serveur" });
     }
   },
