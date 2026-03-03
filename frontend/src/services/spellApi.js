@@ -24,3 +24,17 @@ export async function createSpell({ character_id, name, mana_cost, effect }) {
   if (!res.ok) throw new Error('Erreur lors de la création du sort');
   return await res.json();
 }
+
+export async function deleteSpell(spellId) {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('Non authentifié');
+  const res = await fetch(`http://localhost:3000/spells/${spellId}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || 'Erreur lors de la suppression du sort');
+  }
+  return await res.json();
+}

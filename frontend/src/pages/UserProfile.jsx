@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getCurrentUser } from '../services/userApi';
 import { getMyCharacters, createCharacter, deleteCharacter, updateCharacter } from '../services/characterApi';
 import { getItemsByCharacter, createItem } from '../services/itemApi';
-import { getSpellsByCharacter, createSpell } from '../services/spellApi';
+import { getSpellsByCharacter, createSpell, deleteSpell } from '../services/spellApi';
 import { getPublicItems } from '../services/publicItemApi';
 
 export default function UserProfile() {
@@ -336,7 +336,23 @@ export default function UserProfile() {
                         <ul>
                           {(spells[char.id]?.length === 0) && <li>Aucun sort.</li>}
                           {spells[char.id]?.map(sp => (
-                            <li key={sp.id} className="text-sm">{sp.name} <span className="text-gold">(Coût : {sp.mana_cost})</span> {sp.effect && <span>- {sp.effect}</span>}</li>
+                            <li key={sp.id} className="text-sm flex items-center gap-2">
+                              {sp.name} <span className="text-gold">(Coût : {sp.mana_cost})</span> {sp.effect && <span>- {sp.effect}</span>}
+                              {sp.character_id && (
+                                <button className="rpg-btn-medieval bg-red-700 text-white px-2 py-1 rounded ml-2" onClick={async () => {
+                                  if (window.confirm('Supprimer ce sort ?')) {
+                                    try {
+                                      await deleteSpell(sp.id);
+                                      // Rafraîchir la liste de sorts
+                                      const sps = await getSpellsByCharacter(char.id);
+                                      setSpells(i => ({ ...i, [char.id]: sps }));
+                                    } catch (err) {
+                                      setSpellError(err.message);
+                                    }
+                                  }
+                                }}>Supprimer</button>
+                              )}
+                            </li>
                           ))}
                         </ul>
                       )}
