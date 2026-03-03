@@ -35,3 +35,10 @@ VALUES
 (NULL, 'Shield', true),
 (NULL, 'Staff', true),
 (NULL, 'Robe', true);
+
+-- Sorts publics de base (disponibles pour tous, non liés à un personnage)
+INSERT INTO spells (character_id, name, mana_cost, effect, is_public)
+VALUES
+(NULL, 'Fireball', 20, 'Deals 30 fire damage', true),
+(NULL, 'Ice Bolt', 15, 'Deals 20 ice damage', true),
+(NULL, 'Slash', 0, 'Deals 10 physical damage', true);

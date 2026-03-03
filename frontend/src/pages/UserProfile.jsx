@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getCurrentUser } from '../services/userApi';
 import { getMyCharacters, createCharacter, deleteCharacter, updateCharacter } from '../services/characterApi';
 import { getItemsByCharacter, createItem } from '../services/itemApi';
-import { getSpellsByCharacter, createSpell, deleteSpell } from '../services/spellApi';
+import { getSpellsByCharacter, createSpell, deleteSpell, getPublicSpells, createPublicSpell } from '../services/spellApi';
 import { getPublicItems } from '../services/publicItemApi';
 
 export default function UserProfile() {
@@ -39,9 +39,13 @@ export default function UserProfile() {
   // Gestion des spells
   const [openSpells, setOpenSpells] = useState({}); // { [charId]: bool }
   const [spells, setSpells] = useState({}); // { [charId]: [spells] }
+  const [publicSpells, setPublicSpells] = useState([]);
+  const [spellMode, setSpellMode] = useState({}); // { [charId]: 'public' | 'create' }
+  const [selectedPublicSpell, setSelectedPublicSpell] = useState('');
   const [spellName, setSpellName] = useState('');
   const [spellMana, setSpellMana] = useState(10);
   const [spellEffect, setSpellEffect] = useState('');
+  const [spellIsPublic, setSpellIsPublic] = useState(false);
   const [spellError, setSpellError] = useState(null);
   const [spellSuccess, setSpellSuccess] = useState(false);
   const [spellLoading, setSpellLoading] = useState({}); // { [charId]: bool }
@@ -72,6 +76,9 @@ export default function UserProfile() {
       getPublicItems()
         .then(items => setPublicItems(items))
         .catch(() => setPublicItems([]));
+      getPublicSpells()
+        .then(spells => setPublicSpells(spells))
+        .catch(() => setPublicSpells([]));
     } catch {
       setTimeout(() => {
         if (!ignore) {
@@ -190,12 +197,26 @@ export default function UserProfile() {
     setSpellError(null);
     setSpellSuccess(false);
     try {
-      await createSpell({ character_id: charId, name: spellName, mana_cost: spellMana, effect: spellEffect });
+      if (spellMode[charId] === 'public') {
+        if (!selectedPublicSpell) throw new Error('Sélectionnez un sort public');
+        await createSpell({ character_id: charId, spell_id: selectedPublicSpell });
+      } else {
+        if (spellIsPublic) {
+          await createPublicSpell({ name: spellName, mana_cost: spellMana, effect: spellEffect });
+          // Rafraîchir la liste des sorts publics
+          const spells = await getPublicSpells();
+          setPublicSpells(spells);
+        } else {
+          await createSpell({ character_id: charId, name: spellName, mana_cost: spellMana, effect: spellEffect });
+        }
+      }
       setSpellSuccess(true);
       setSpellName('');
       setSpellMana(10);
       setSpellEffect('');
-      // Rafraîchir la liste de spells
+      setSelectedPublicSpell('');
+      setSpellIsPublic(false);
+      // Rafraîchir la liste de sorts
       const sps = await getSpellsByCharacter(charId);
       setSpells(i => ({ ...i, [charId]: sps }));
     } catch (err) {
@@ -357,10 +378,41 @@ export default function UserProfile() {
                         </ul>
                       )}
                       <form className="flex flex-col gap-2 mt-2" onSubmit={e => handleAddSpell(e, char.id)}>
-                        <input className="rpg-input" type="text" placeholder="Nom du sort" value={spellName} onChange={e => setSpellName(e.target.value)} required />
-                        <input className="rpg-input" type="number" min="0" placeholder="Coût en mana" value={spellMana} onChange={e => setSpellMana(Number(e.target.value))} required />
-                        <input className="rpg-input" type="text" placeholder="Effet (optionnel)" value={spellEffect} onChange={e => setSpellEffect(e.target.value)} />
-                        <button className="rpg-btn-medieval" type="submit">Ajouter le sort</button>
+                        <div className="flex gap-2 mb-2">
+                          <button type="button" className={`rpg-btn-medieval ${spellMode[char.id]==='public'?'bg-gold':''}`} onClick={()=>setSpellMode(m=>({...m,[char.id]:'public'}))}>Choisir sort existant</button>
+                          <button type="button" className={`rpg-btn-medieval ${spellMode[char.id]==='create'?'bg-gold':''}`} onClick={()=>setSpellMode(m=>({...m,[char.id]:'create'}))}>Créer un nouveau sort</button>
+                        </div>
+                        {spellMode[char.id] === 'public' && (
+                          publicSpells.length === 0 ? (
+                            <div className="text-gold">Aucun sort public disponible</div>
+                          ) : (
+                            <select className="rpg-input" value={selectedPublicSpell} onChange={e => setSelectedPublicSpell(e.target.value)} required>
+                              <option value="">Choisir un sort existant</option>
+                              {publicSpells.map(sp => (
+                                <option key={sp.id} value={sp.id}>{sp.name} (Coût : {sp.mana_cost})</option>
+                              ))}
+                            </select>
+                          )
+                        )}
+                        {spellMode[char.id] === 'create' && (
+                          <>
+                            <input className="rpg-input" type="text" placeholder="Nom du sort" value={spellName} onChange={e => setSpellName(e.target.value)} required />
+                            <input className="rpg-input" type="number" min="0" placeholder="Coût en mana" value={spellMana} onChange={e => setSpellMana(Number(e.target.value))} required />
+                            <input className="rpg-input" type="text" placeholder="Effet (optionnel)" value={spellEffect} onChange={e => setSpellEffect(e.target.value)} />
+                            <label className="flex items-center gap-2">
+                              <input type="checkbox" checked={spellIsPublic} onChange={e => setSpellIsPublic(e.target.checked)} />
+                              Rendre le sort public (disponible pour tous)
+                            </label>
+                          </>
+                        )}
+                        <button className="rpg-btn-medieval" type="submit"
+                          disabled={
+                            (spellMode[char.id]==='public' && (!selectedPublicSpell || publicSpells.length===0)) ||
+                            (spellMode[char.id]==='create' && !spellName.trim())
+                          }
+                        >
+                          Ajouter le sort
+                        </button>
                         {spellError && <div className="text-gold mt-2">{spellError}</div>}
                         {spellSuccess && <div className="text-gold mt-2">Sort ajouté !</div>}
                       </form>

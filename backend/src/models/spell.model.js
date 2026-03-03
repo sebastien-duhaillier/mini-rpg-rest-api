@@ -65,6 +65,19 @@ const Spell = {
     return res.rows[0];
   },
 
+  // Créer un sort public global
+  createPublic: async (name, mana_cost = 10, effect = null) => {
+    const res = await pool.query(
+      `
+      INSERT INTO spells (character_id, name, mana_cost, effect, is_public)
+      VALUES (NULL, $1, $2, $3, true)
+      RETURNING *
+      `,
+      [name, mana_cost, effect]
+    );
+    return res.rows[0];
+  },
+
   // ✅ update seulement si owned
   updateOwned: async (id, user_id, fields) => {
     const setClauses = [];
@@ -122,6 +135,14 @@ const Spell = {
       [id, user_id]
     );
     return res.rows[0];
+  },
+
+  // Récupérer les sorts publics globaux
+  getPublic: async () => {
+    const res = await pool.query(
+      "SELECT * FROM spells WHERE character_id IS NULL AND is_public = true ORDER BY id"
+    );
+    return res.rows;
   },
 };
 

@@ -38,3 +38,25 @@ export async function deleteSpell(spellId) {
   }
   return await res.json();
 }
+
+// Service pour récupérer les sorts publics
+export async function getPublicSpells() {
+  const res = await fetch('http://localhost:3000/spells/public');
+  if (!res.ok) throw new Error('Erreur lors du chargement des sorts publics');
+  return await res.json();
+}
+
+export async function createPublicSpell({ name, mana_cost, effect }) {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('Non authentifié');
+  const res = await fetch('http://localhost:3000/spells/public', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ name, mana_cost, effect })
+  });
+  if (!res.ok) throw new Error('Erreur lors de la création du sort public');
+  return await res.json();
+}

@@ -57,6 +57,19 @@ const SpellController = {
     }
   },
 
+  // Créer un sort public global
+  createPublic: async (req, res) => {
+    try {
+      const { name, mana_cost, effect } = req.body;
+      if (!name) return res.status(400).json({ error: "Nom du sort requis" });
+      const spell = await Spell.createPublic(name, mana_cost, effect);
+      res.status(201).json(spell);
+    } catch (err) {
+      console.error("Erreur createPublic spell:", err);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  },
+
   // ✅ update : seulement si owned
   update: async (req, res) => {
     try {
@@ -85,6 +98,17 @@ const SpellController = {
       res.json({ message: "Sort supprimé", id: deleted.id });
     } catch (err) {
       console.error("Erreur delete spell:", err);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  },
+
+  // Récupérer les sorts publics globaux
+  getPublic: async (req, res) => {
+    try {
+      const spells = await Spell.getPublic();
+      res.json(spells);
+    } catch (err) {
+      console.error("Erreur getPublic spells:", err);
       res.status(500).json({ error: "Erreur serveur" });
     }
   },

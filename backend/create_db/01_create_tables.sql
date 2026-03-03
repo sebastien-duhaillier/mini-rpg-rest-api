@@ -35,6 +35,7 @@ CREATE TABLE spells (
     name VARCHAR(50) NOT NULL,
     mana_cost INTEGER DEFAULT 10,
     effect VARCHAR(255),
+    is_public BOOLEAN DEFAULT false,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
