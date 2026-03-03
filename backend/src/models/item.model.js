@@ -52,15 +52,23 @@ const Item = {
     return res.rows[0];
   },
 
+  // Récupérer tous les items publics globaux
+  getPublic: async () => {
+    const res = await pool.query(
+      "SELECT * FROM items WHERE is_public = true AND character_id IS NULL ORDER BY id"
+    );
+    return res.rows;
+  },
+
   // Créer un item (ownership check dans controller)
-  create: async (character_id, name, rarity = "common") => {
+  create: async (character_id, name, rarity = "common", is_public = false) => {
     const res = await pool.query(
       `
-      INSERT INTO items (character_id, name, rarity)
-      VALUES ($1,$2,$3)
+      INSERT INTO items (character_id, name, rarity, is_public)
+      VALUES ($1,$2,$3,$4)
       RETURNING *
       `,
-      [character_id, name, rarity]
+      [character_id, name, rarity, is_public]
     );
     return res.rows[0];
   },
@@ -120,6 +128,15 @@ const Item = {
       RETURNING items.id
       `,
       [id, user_id]
+    );
+    return res.rows[0];
+  },
+
+  // Supprimer l’item public du personnage (sans supprimer l’item global)
+  deleteFromCharacter: async (item_id, character_id) => {
+    const res = await pool.query(
+      "DELETE FROM items WHERE id = $1 AND character_id = $2 RETURNING id",
+      [item_id, character_id]
     );
     return res.rows[0];
   },

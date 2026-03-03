@@ -43,5 +43,6 @@ CREATE TABLE items (
     character_id INTEGER REFERENCES characters(id) ON DELETE CASCADE,
     name VARCHAR(50) NOT NULL,
     rarity VARCHAR(20) DEFAULT 'common',
+    is_public BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

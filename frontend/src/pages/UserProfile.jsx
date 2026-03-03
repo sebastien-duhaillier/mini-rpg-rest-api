@@ -3,6 +3,7 @@ import { getCurrentUser } from '../services/userApi';
 import { getMyCharacters, createCharacter, deleteCharacter, updateCharacter } from '../services/characterApi';
 import { getItemsByCharacter, createItem } from '../services/itemApi';
 import { getSpellsByCharacter, createSpell } from '../services/spellApi';
+import { getPublicItems } from '../services/publicItemApi';
 
 export default function UserProfile() {
   const [user, setUser] = useState(null);
@@ -26,8 +27,12 @@ export default function UserProfile() {
   // Gestion des items
   const [openItems, setOpenItems] = useState({}); // { [charId]: bool }
   const [items, setItems] = useState({}); // { [charId]: [items] }
+  const [publicItems, setPublicItems] = useState([]);
+  const [itemMode, setItemMode] = useState({}); // { [charId]: 'public' | 'create' }
+  const [selectedPublicItem, setSelectedPublicItem] = useState('');
   const [itemName, setItemName] = useState('');
   const [itemRarity, setItemRarity] = useState('common');
+  const [itemIsPublic, setItemIsPublic] = useState(true);
   const [itemError, setItemError] = useState(null);
   const [itemSuccess, setItemSuccess] = useState(false);
   const [itemLoading, setItemLoading] = useState({}); // { [charId]: bool }
@@ -64,6 +69,9 @@ export default function UserProfile() {
         .then(chars => { if (!ignore) setCharacters(chars); })
         .catch(() => { if (!ignore) setCharacters([]); })
         .finally(() => { if (!ignore) setLoading(false); });
+      getPublicItems()
+        .then(items => setPublicItems(items))
+        .catch(() => setPublicItems([]));
     } catch {
       setTimeout(() => {
         if (!ignore) {
@@ -143,10 +151,17 @@ export default function UserProfile() {
     setItemError(null);
     setItemSuccess(false);
     try {
-      await createItem({ character_id: charId, name: itemName, rarity: itemRarity });
+      if (itemMode[charId] === 'public') {
+        if (!selectedPublicItem) throw new Error('Sélectionnez un item public');
+        await createItem({ character_id: charId, item_id: selectedPublicItem });
+      } else {
+        await createItem({ character_id: charId, name: itemName, rarity: itemRarity, is_public: itemIsPublic });
+      }
       setItemSuccess(true);
       setItemName('');
       setItemRarity('common');
+      setSelectedPublicItem('');
+      setItemIsPublic(true);
       // Rafraîchir la liste d'items
       const its = await getItemsByCharacter(charId);
       setItems(i => ({ ...i, [charId]: its }));
@@ -249,19 +264,64 @@ export default function UserProfile() {
                         <ul>
                           {(items[char.id]?.length === 0) && <li>Aucun item.</li>}
                           {items[char.id]?.map(it => (
-                            <li key={it.id} className="text-sm">{it.name} <span className="text-gold">[{it.rarity}]</span></li>
+                            <li key={it.id} className="text-sm flex items-center gap-2">
+                              {it.name} <span className="text-gold">[{it.rarity}]</span>
+                              <button className="rpg-btn-medieval bg-red-700 text-white px-2 py-1 rounded" onClick={async () => {
+                                if (window.confirm('Supprimer cet item ?')) {
+                                  try {
+                                    await import('../services/itemApi').then(api => api.deleteItem(it.id));
+                                    // Rafraîchir la liste d'items
+                                    const its = await getItemsByCharacter(char.id);
+                                    setItems(i => ({ ...i, [char.id]: its }));
+                                  } catch (err) {
+                                    setItemError(err.message);
+                                  }
+                                }
+                              }}>Supprimer</button>
+                            </li>
                           ))}
                         </ul>
                       )}
                       <form className="flex flex-col gap-2 mt-2" onSubmit={e => handleAddItem(e, char.id)}>
-                        <input className="rpg-input" type="text" placeholder="Nom de l'item" value={itemName} onChange={e => setItemName(e.target.value)} required />
-                        <select className="rpg-input" value={itemRarity} onChange={e => setItemRarity(e.target.value)}>
-                          <option value="common">Commun</option>
-                          <option value="rare">Rare</option>
-                          <option value="epic">Épique</option>
-                          <option value="legendary">Légendaire</option>
-                        </select>
-                        <button className="rpg-btn-medieval" type="submit">Ajouter l'item</button>
+                        <div className="flex gap-2 mb-2">
+                          <button type="button" className={`rpg-btn-medieval ${itemMode[char.id]==='public'?'bg-gold':''}`} onClick={()=>setItemMode(m=>({...m,[char.id]:'public'}))}>Choisir item existant</button>
+                          <button type="button" className={`rpg-btn-medieval ${itemMode[char.id]==='create'?'bg-gold':''}`} onClick={()=>setItemMode(m=>({...m,[char.id]:'create'}))}>Créer un nouvel item</button>
+                        </div>
+                        {itemMode[char.id] === 'public' && (
+                          publicItems.length === 0 ? (
+                            <div className="text-gold">Aucun item public disponible</div>
+                          ) : (
+                            <select className="rpg-input" value={selectedPublicItem} onChange={e => setSelectedPublicItem(e.target.value)} required>
+                              <option value="">Choisir un item existant</option>
+                              {publicItems.map(it => (
+                                <option key={it.id} value={it.id}>{it.name} [{it.rarity}]</option>
+                              ))}
+                            </select>
+                          )
+                        )}
+                        {itemMode[char.id] === 'create' && (
+                          <>
+                            <input className="rpg-input" type="text" placeholder="Nom de l'item" value={itemName} onChange={e => setItemName(e.target.value)} required />
+                            <select className="rpg-input" value={itemRarity} onChange={e => setItemRarity(e.target.value)}>
+                              <option value="common">Commun</option>
+                              <option value="rare">Rare</option>
+                              <option value="epic">Épique</option>
+                              <option value="legendary">Légendaire</option>
+                            </select>
+                            <label className="flex items-center gap-2">
+                              <input type="checkbox" checked={itemIsPublic} onChange={e => setItemIsPublic(e.target.checked)} />
+                              Rendre l'item public (disponible pour tous)
+                            </label>
+                          </>
+                        )}
+                        <button className="rpg-btn-medieval" type="submit"
+                          disabled={
+                            (itemMode[char.id]==='public' && (!selectedPublicItem || publicItems.length===0)) ||
+                            (itemMode[char.id]==='create' && !itemName.trim())
+                          }
+                        >
+                          Ajouter l'item
+                        </button>
                         {itemError && <div className="text-gold mt-2">{itemError}</div>}
                         {itemSuccess && <div className="text-gold mt-2">Item ajouté !</div>}
                       </form>

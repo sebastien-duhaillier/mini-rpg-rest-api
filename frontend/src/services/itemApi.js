@@ -10,17 +10,36 @@ export async function getItemsByCharacter(characterId) {
   return await res.json();
 }
 
-export async function createItem({ character_id, name, rarity }) {
+export async function createItem({ character_id, item_id, name, rarity, is_public }) {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('Non authentifié');
+  let body = { character_id };
+  if (item_id) {
+    body.item_id = item_id;
+  } else {
+    body.name = name;
+    body.rarity = rarity;
+    body.is_public = is_public;
+  }
   const res = await fetch('http://localhost:3000/items', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify({ character_id, name, rarity })
+    body: JSON.stringify(body)
   });
   if (!res.ok) throw new Error('Erreur lors de la création de l\'item');
+  return await res.json();
+}
+
+export async function deleteItem(itemId) {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('Non authentifié');
+  const res = await fetch(`http://localhost:3000/items/${itemId}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error('Erreur lors de la suppression de l\'item');
   return await res.json();
 }

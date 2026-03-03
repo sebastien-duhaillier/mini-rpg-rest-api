@@ -3,6 +3,9 @@ const router = express.Router();
 const ItemController = require("../controllers/item.controller");
 const auth = require("../middleware/auth.middleware");
 
+// Route pour récupérer tous les items publics globaux (non protégée)
+router.get("/public", ItemController.getPublic);
+
 // Tout items = protégé
 router.get("/", auth, ItemController.getAll);
 

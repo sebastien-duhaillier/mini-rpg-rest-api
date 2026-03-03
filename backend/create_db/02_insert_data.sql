@@ -28,10 +28,10 @@ VALUES
 (2, 'Ice Bolt', 15, 'Deals 20 ice damage'),
 (1, 'Slash', 0, 'Deals 10 physical damage');
 
--- Items
-INSERT INTO items (character_id, name)
+-- Items publics de base (disponibles pour tous, non liés à un personnage)
+INSERT INTO items (character_id, name, is_public)
 VALUES
-(1, 'Sword'),
-(1, 'Shield'),
-(2, 'Staff'),
-(2, 'Robe');
+(NULL, 'Sword', true),
+(NULL, 'Shield', true),
+(NULL, 'Staff', true),
+(NULL, 'Robe', true);
