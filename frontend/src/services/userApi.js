@@ -1,8 +1,9 @@
+const API_URL = import.meta.env.VITE_BACKEND_URL;
+
 export async function getUsers() {
-  const API_URL = 'http://localhost:3000/users';
   const token = localStorage.getItem('token');
   if (!token) throw new Error('Non authentifié');
-  const res = await fetch(API_URL, {
+  const res = await fetch(`${API_URL}/users`, {
     headers: { 'Authorization': `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Erreur lors du chargement des utilisateurs');
@@ -10,8 +11,7 @@ export async function getUsers() {
 }
 
 export async function loginUser(username, password) {
-  const API_URL = 'http://localhost:3000/auth/login';
-  const res = await fetch(API_URL, {
+  const res = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password })
@@ -21,10 +21,9 @@ export async function loginUser(username, password) {
 }
 
 export async function getCurrentUser(userId) {
-  const API_URL = `http://localhost:3000/users/${userId}`;
   const token = localStorage.getItem('token');
   if (!token) throw new Error('Non authentifié');
-  const res = await fetch(API_URL, {
+  const res = await fetch(`${API_URL}/users/${userId}`, {
     headers: { 'Authorization': `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Impossible de récupérer le profil');
@@ -32,8 +31,7 @@ export async function getCurrentUser(userId) {
 }
 
 export async function registerUser(username, password, email) {
-  const API_URL = 'http://localhost:3000/auth/register';
-  const res = await fetch(API_URL, {
+  const res = await fetch(`${API_URL}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password, email })
@@ -43,10 +41,9 @@ export async function registerUser(username, password, email) {
 }
 
 export async function deleteUser(userId) {
-  const API_URL = `http://localhost:3000/users/${userId}`;
   const token = localStorage.getItem('token');
   if (!token) throw new Error('Non authentifié');
-  const res = await fetch(API_URL, {
+  const res = await fetch(`${API_URL}/users/${userId}`, {
     method: 'DELETE',
     headers: { 'Authorization': `Bearer ${token}` }
   });
