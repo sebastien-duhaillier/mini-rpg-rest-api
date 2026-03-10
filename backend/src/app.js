@@ -7,7 +7,10 @@ const app = express();
 
 // Middleware CORS pour autoriser le frontend
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173",
+    "https://mini-rpg-rest-api.vercel.app"
+  ],
   credentials: true
 }));
 
