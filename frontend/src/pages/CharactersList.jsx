@@ -21,7 +21,7 @@ export default function CharactersList() {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const userId = payload.id;
-      fetch(`http://localhost:3000/users/${userId}/characters`, {
+      fetch(`${import.meta.env.VITE_BACKEND_URL}/users/${userId}/characters`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
         .then(res => res.json())
