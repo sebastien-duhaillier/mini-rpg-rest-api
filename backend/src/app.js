@@ -51,4 +51,5 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Serveur démarré sur http://localhost:${PORT}`);
+  console.log('JWT_SECRET:', process.env.JWT_SECRET);
 });
