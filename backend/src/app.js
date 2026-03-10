@@ -9,7 +9,8 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://mini-rpg-rest-api.vercel.app"
+    "https://mini-rpg-rest-api.vercel.app",
+    "https://mini-rpg-rest-oxvrq362v-sebastien-duhailliers-projects.vercel.app"
   ],
   credentials: true
 }));
