@@ -8,6 +8,7 @@ const app = express();
 // Middleware CORS pour autoriser le frontend
 app.use(cors({
   origin: (origin, callback) => {
+    console.log("CORS origin:", origin);
     if (
       !origin ||
       origin === "http://localhost:5173" ||
