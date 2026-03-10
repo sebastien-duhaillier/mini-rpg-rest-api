@@ -144,6 +144,23 @@ const Spell = {
     );
     return res.rows;
   },
+
+  // Copier un sort public pour un personnage
+  copyPublicToCharacter: async (spell_id, character_id) => {
+    // On récupère le sort public global
+    const res = await pool.query(
+      "SELECT name, mana_cost, effect FROM spells WHERE id = $1 AND is_public = true AND character_id IS NULL",
+      [spell_id]
+    );
+    if (res.rows.length === 0) return null;
+    const { name, mana_cost, effect } = res.rows[0];
+    // On crée une copie liée au personnage
+    const insert = await pool.query(
+      `INSERT INTO spells (character_id, name, mana_cost, effect, is_public) VALUES ($1, $2, $3, $4, true) RETURNING *`,
+      [character_id, name, mana_cost, effect]
+    );
+    return insert.rows[0];
+  },
 };
 
 module.exports = Spell;

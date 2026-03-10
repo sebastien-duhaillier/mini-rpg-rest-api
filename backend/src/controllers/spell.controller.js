@@ -44,12 +44,18 @@ const SpellController = {
   // ✅ création : vérifier ownership du character_id
   create: async (req, res) => {
     try {
-      const { character_id, name, mana_cost, effect } = req.body;
-
+      const { character_id, name, mana_cost, effect, spell_id } = req.body;
       const character = await Character.getByIdAndUser(character_id, req.user.id);
       if (!character) return res.status(403).json({ error: "Personnage interdit" });
-
-      const spell = await Spell.create(character_id, name, mana_cost, effect);
+      let spell;
+      if (spell_id) {
+        // Ajout d’un sort public existant à un personnage
+        spell = await Spell.copyPublicToCharacter(spell_id, character_id);
+        if (!spell) return res.status(404).json({ error: "Sort public non trouvé" });
+      } else {
+        // Création d’un sort privé
+        spell = await Spell.create(character_id, name, mana_cost, effect);
+      }
       res.status(201).json(spell);
     } catch (err) {
       console.error("Erreur create spell:", err);

@@ -10,16 +10,25 @@ export async function getSpellsByCharacter(characterId) {
   return await res.json();
 }
 
-export async function createSpell({ character_id, name, mana_cost, effect }) {
+// Créer un sort (privé ou copie d’un sort public)
+export async function createSpell({ character_id, name, mana_cost, effect, spell_id }) {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('Non authentifié');
+  let body = { character_id };
+  if (spell_id) {
+    body.spell_id = spell_id;
+  } else {
+    body.name = name;
+    body.mana_cost = mana_cost;
+    body.effect = effect;
+  }
   const res = await fetch('http://localhost:3000/spells', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify({ character_id, name, mana_cost, effect })
+    body: JSON.stringify(body)
   });
   if (!res.ok) throw new Error('Erreur lors de la création du sort');
   return await res.json();
@@ -46,6 +55,7 @@ export async function getPublicSpells() {
   return await res.json();
 }
 
+// Créer un sort public global
 export async function createPublicSpell({ name, mana_cost, effect }) {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('Non authentifié');
