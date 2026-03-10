@@ -1,9 +1,11 @@
 // Service pour gérer les spells côté frontend
 
+const API_URL = import.meta.env.VITE_BACKEND_URL;
+
 export async function getSpellsByCharacter(characterId) {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('Non authentifié');
-  const res = await fetch(`http://localhost:3000/spells/character/${characterId}`, {
+  const res = await fetch(`${API_URL}/spells/character/${characterId}`, {
     headers: { 'Authorization': `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Erreur lors du chargement des sorts');
@@ -22,7 +24,7 @@ export async function createSpell({ character_id, name, mana_cost, effect, spell
     body.mana_cost = mana_cost;
     body.effect = effect;
   }
-  const res = await fetch('http://localhost:3000/spells', {
+  const res = await fetch(`${API_URL}/spells`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -37,7 +39,7 @@ export async function createSpell({ character_id, name, mana_cost, effect, spell
 export async function deleteSpell(spellId) {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('Non authentifié');
-  const res = await fetch(`http://localhost:3000/spells/${spellId}`, {
+  const res = await fetch(`${API_URL}/spells/${spellId}`, {
     method: 'DELETE',
     headers: { 'Authorization': `Bearer ${token}` }
   });
@@ -50,7 +52,7 @@ export async function deleteSpell(spellId) {
 
 // Service pour récupérer les sorts publics
 export async function getPublicSpells() {
-  const res = await fetch('http://localhost:3000/spells/public');
+  const res = await fetch(`${API_URL}/spells/public`);
   if (!res.ok) throw new Error('Erreur lors du chargement des sorts publics');
   return await res.json();
 }
@@ -59,7 +61,7 @@ export async function getPublicSpells() {
 export async function createPublicSpell({ name, mana_cost, effect }) {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('Non authentifié');
-  const res = await fetch('http://localhost:3000/spells/public', {
+  const res = await fetch(`${API_URL}/spells/public`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
