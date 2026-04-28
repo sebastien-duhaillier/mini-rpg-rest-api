@@ -4,6 +4,7 @@ import { getMyCharacters, createCharacter, deleteCharacter, updateCharacter } fr
 import { getItemsByCharacter, createItem } from '../services/itemApi';
 import { getSpellsByCharacter, createSpell, deleteSpell, getPublicSpells, createPublicSpell } from '../services/spellApi';
 import { getPublicItems } from '../services/publicItemApi';
+import profilImg from '../assets/images/mon-profil.jpg';
 
 export default function UserProfile() {
   const [user, setUser] = useState(null);
@@ -229,7 +230,19 @@ export default function UserProfile() {
   if (!user) return <div>Aucun utilisateur connecté.</div>;
 
   return (
-    <div className="rpg-bg-medieval min-h-screen flex flex-col items-center justify-center">
+    <div
+      style={{
+        minHeight: '100vh',
+        backgroundImage: `url(${profilImg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <div className="rpg-card-medieval p-8 mt-8 w-full max-w-2xl">
         <h2 className="rpg-title-medieval mb-4 text-2xl">Profil utilisateur</h2>
         <p><b>Nom d'utilisateur :</b> {user.username}</p>

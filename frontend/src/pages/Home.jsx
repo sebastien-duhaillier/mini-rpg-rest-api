@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useCallback } from 'react';
+import acceuilImg from '../assets/images/acceuil.jpg';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -13,9 +14,17 @@ export default function Home() {
   }, [navigate]);
 
   return (
-    <div className="rpg-bg-medieval min-h-screen flex flex-col items-center justify-center p-4">
+    <div
+      style={{
+        minHeight: '100vh',
+        backgroundImage: `url(${acceuilImg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+      className="flex flex-col items-center justify-center p-4"
+    >
       <div className="rpg-card-medieval w-full max-w-lg p-10 rounded-2xl shadow-2xl flex flex-col items-center border-4 border-gold mx-auto">
-        {/* Suppression de l'image d'épée */}
         <h1 className="rpg-title-medieval mb-4 text-4xl font-fantasy text-center">Mini RPG</h1>
         <p className="mb-6 text-center text-lg text-parchment">
           <span style={{fontStyle:'italic'}}>Entrez dans un monde d’aventure, de magie et de légendes…</span><br/>

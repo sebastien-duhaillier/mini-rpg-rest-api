@@ -57,4 +57,8 @@ Développé seul par Sebastien DUHAILLIER dans le cadre de l’enrichissement du
 - Back: https://mini-rpg-rest-api-production.up.railway.app/
 - Base de données PostgreSQL hébergée sur Neon (https://neon.tech)
 
+## Crédits
+
+- Icône du curseur épée : [sword icon by Freepik - Flaticon](https://www.flaticon.com/)
+
 

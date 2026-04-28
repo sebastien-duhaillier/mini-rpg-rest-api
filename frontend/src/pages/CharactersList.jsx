@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getItemsByCharacter } from '../services/itemApi';
 import { getSpellsByCharacter } from '../services/spellApi';
+import personnageImg from '../assets/images/personnage.jpg';
 
 export default function CharactersList() {
   const [characters, setCharacters] = useState([]);
@@ -56,7 +57,19 @@ export default function CharactersList() {
   }, []);
 
   return (
-    <div className="rpg-bg-medieval min-h-screen flex flex-col items-center justify-center">
+    <div
+      style={{
+        minHeight: '100vh',
+        backgroundImage: `url(${personnageImg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <div className="rpg-card-medieval p-8 mt-8 w-full max-w-2xl">
         <h2 className="rpg-title-medieval mb-4 text-2xl">Mes héros</h2>
         {loading && <div>Chargement...</div>}

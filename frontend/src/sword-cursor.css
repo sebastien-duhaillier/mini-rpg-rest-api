@@ -1,0 +1,8 @@
+/* Curseur épée par Freepik - Flaticon : https://www.flaticon.com/ */
+body {
+  cursor: url('/src/assets/images/sword.png') 16 16, auto;
+}
+
+button, .rpg-btn-medieval {
+  cursor: url('/src/assets/images/sword.png') 16 16, auto !important;
+}
